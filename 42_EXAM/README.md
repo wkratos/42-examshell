@@ -46,20 +46,6 @@
    
    **new_ex** : generate a new exercice on the same level
    
- # 🕶 VIP CHEAT code :
- [Sponsor to become VIP](https://github.com/sponsors/JCluzet)
- OR
- [Contribute to become VIP](CONTRIBUTING.md)
- 
- You can contribute by adding new exercises or improving the program 
- 
-   **gradenow** : Get an instant correction (no grademe cooldown)
-   
-  > Being a sponsor brings VIP on GradeMe and 42_EXAM.
-  
-  > VIPs also have exactly the same display as the 42 examshell.
-  
-  > More features coming
 
  # Launch 42_EXAM in ONE COMMAND : 
 
