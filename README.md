@@ -1,5 +1,5 @@
 # 9RA AND THEN CLONE IT  
-# 🧠 1337-Piscine-Exam-Leaks (KOLXI AYTBEDEL DONT WORRY 😂😂😂)
+# 🧠 1337-Piscine-Exam-Leaks (KOLXI TBDEL)
 
 > **⚠️ ALERT TO ALL POOLERS**  
 > You're about to uncover the ultimate secret to pass the Piscine... or so you thought 🤭
