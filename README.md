@@ -64,4 +64,3 @@ Welcome to 1337 💀💀💀💀💀💀💀💀.
 To every pooler who thought this was the shortcut:  
 You’ve just been **Piscine-trolled**.  
 Bonne chance, baby shark 🦈  
-**Hhhhhhhhhhhhhhhh 🤣**
