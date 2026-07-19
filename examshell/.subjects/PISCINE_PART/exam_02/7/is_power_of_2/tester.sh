@@ -1,180 +1,42 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    tester.sh                                          :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: jcluzet <jcluzet@student.42.fr>            +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/06/20 02:26:11 by jcluzet           #+#    #+#              #
-#    Updated: 2022/09/02 00:16:51 by jcluzet          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+#!/usr/bin/env bash
 
+set -u
+name=is_power_of_2
+file=is_power_of_2.c
 FILE='is_power_of_2.c'
-MAIN='main.c'
-MAIN1='../.system/grading/main.c'
 ASSIGN='is_power_of_2/is_power_of_2.c'
+reference=.system/grading/$file
+submission=rendu/$name/$file
+main=.system/grading/main.c
+traceback=traceback
+rm -f .system/grading/passed .system/grading/reference .system/grading/submission "$traceback"
 
-index=0
-
-if [ -e traceback ]
-then
-    rm traceback
+if [ ! -f "$submission" ]; then
+    printf 'Missing submission: %s\n' "$submission" >"$traceback"
+    exit 1
+fi
+if ! cc -Wall -Wextra -Werror "$reference" "$main" -o .system/grading/reference 2>"$traceback"; then
+    exit 1
+fi
+if ! cc -Wall -Wextra -Werror "$submission" "$main" -o .system/grading/submission 2>"$traceback"; then
+    exit 1
 fi
 
-cd .system/grading
-gcc -o source $FILE $MAIN
-./source 2 | cat -e > sourcexam       #TESTING
-rm source
-cd ../../rendu
-{
-gcc -o final $ASSIGN $MAIN1
-}  &>../.system/grading/traceback
-{
-./final 2 | cat -e > finalexam        #TESTING
-mv finalexam ../.system/grading/
-rm final
-}  &>/dev/null
-cd ../.system/grading
-DIFF=$(diff sourcexam finalexam)
-echo "" >> traceback
-if [ "$DIFF" != "" ]
-then
-		index=$(($index + 1))
-		cat sourcexam >> traceback
-		echo '\n' >> traceback
-		if [ -e finalexam ]
-		then
-		cat finalexam >> traceback
-		else
-		echo "" >> traceback
-		fi
-		echo '\n' >> traceback
-		echo "-------" >> traceback
-fi
-rm finalexam
-
-
-
-gcc -o source $FILE $MAIN
-./source 4 | cat -e > sourcexam    #TESTING
-rm source
-cd ../../rendu
-{
-gcc -o final $ASSIGN $MAIN1
-./final 4 rrerrrfiiljdfxjyuifrrvcoojh | cat -e > finalexam     #TESTING
-mv finalexam ../.system/grading/
-rm final
-}  &>/dev/null
-cd ../.system/grading
-DIFF=$(diff sourcexam finalexam)
-echo "" >> traceback
-if [ "$DIFF" != "" ]
-then
-		index=$(($index + 1))
-		cat sourcexam >> traceback
-		echo '\n' >> traceback
-		if [ -e finalexam ]
-		then
-		cat finalexam >> traceback
-		else
-		echo "" >> traceback
-		fi
-		echo '\n' >> traceback
-		echo "-------" >> traceback
-fi
-
-gcc -o source $FILE $MAIN
-./source "1073741824" | cat -e > sourcexam    #TESTING
-rm source
-cd ../../rendu
-{
-gcc -o final $ASSIGN $MAIN1
-./final "1073741824" | cat -e > finalexam     #TESTING
-mv finalexam ../.system/grading/
-rm final
-}  &>/dev/null
-cd ../.system/grading
-DIFF=$(diff sourcexam finalexam)
-echo "" >> traceback
-if [ "$DIFF" != "" ]
-then
-		index=$(($index + 1))
-		cat sourcexam >> traceback
-		echo '\n' >> traceback
-		if [ -e finalexam ]
-		then
-		cat finalexam >> traceback
-		else
-		echo "" >> traceback
-		fi
-		echo '\n' >> traceback
-		echo "-------" >> traceback
-fi
-
-gcc -o source $FILE $MAIN
-./source "2147483648" | cat -e > sourcexam    #TESTING
-rm source
-cd ../../rendu
-{
-gcc -o final $ASSIGN $MAIN1
-./final "2147483648" | cat -e > finalexam     #TESTING
-mv finalexam ../.system/grading/
-rm final
-}  &>/dev/null
-cd ../.system/grading
-DIFF=$(diff sourcexam finalexam)
-echo "" >> traceback
-if [ "$DIFF" != "" ]
-then
-		index=$(($index + 1))
-		cat sourcexam >> traceback
-		echo '\n' >> traceback
-		if [ -e finalexam ]
-		then
-		cat finalexam >> traceback
-		else
-		echo "" >> traceback
-		fi
-		echo '\n' >> traceback
-		echo "-------" >> traceback
-fi
-
-gcc -o source $FILE $MAIN
-./source "2147483647" | cat -e > sourcexam    #TESTING
-rm source
-cd ../../rendu
-{
-gcc -o final $ASSIGN $MAIN1
-./final "2147483647" | cat -e > finalexam     #TESTING
-mv finalexam ../.system/grading/
-rm final
-}  &>/dev/null
-cd ../.system/grading
-DIFF=$(diff sourcexam finalexam)
-echo "" >> traceback
-if [ "$DIFF" != "" ]
-then
-		index=$(($index + 1))
-		cat sourcexam >> traceback
-		echo '\n' >> traceback
-		if [ -e finalexam ]
-		then
-		cat finalexam >> traceback
-		else
-		echo "" >> traceback
-		fi
-		echo '\n' >> traceback
-		echo "-------" >> traceback
-fi
-
-
-
-if [ $index -eq 0 ]
-then
-	touch passed
-fi
-{
-mv traceback ../../traceback
-}	&>/dev/null
-rm sourcexam
+for value in 0 1 2 3 4 6 8 10 16 18 31 32 1024 1023; do
+    expected=$(timeout --kill-after=1s 3s .system/grading/reference "$value")
+    reference_status=$?
+    actual=$(timeout --kill-after=1s 3s .system/grading/submission "$value")
+    submission_status=$?
+    if [ "$submission_status" -eq 124 ] || [ "$submission_status" -eq 137 ]; then
+        printf 'TIMEOUT for input %s.\n' "$value" >"$traceback"
+        rm -f .system/grading/reference .system/grading/submission
+        exit 1
+    fi
+    if [ "$reference_status" -ne "$submission_status" ] || [ "$expected" != "$actual" ]; then
+        printf 'FAILED input %s: expected %s, received %s.\n' "$value" "$expected" "$actual" >"$traceback"
+        rm -f .system/grading/reference .system/grading/submission
+        exit 1
+    fi
+done
+rm -f .system/grading/reference .system/grading/submission "$traceback"
+touch .system/grading/passed

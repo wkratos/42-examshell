@@ -28,7 +28,7 @@ run_case() {
     actual=$(mktemp)
     timeout 3 .system/grading/reference "$@" >"$expected" 2>&1
     ref_status=$?
-    timeout --foreground --kill-after=1s 3s .system/grading/submission "$@" >"$actual" 2>&1
+    timeout --kill-after=1s 3s .system/grading/submission "$@" >"$actual" 2>&1
     sub_status=$?
     if [ "$ref_status" -ne "$sub_status" ] || ! cmp -s "$expected" "$actual"; then
         printf 'FAILED: %s' "$file" >>"$traceback"

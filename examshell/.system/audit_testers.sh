@@ -35,13 +35,56 @@ fi
 case "$mode" in
     correct) [ -n "$reference" ] && cp "$reference" "$work/rendu/$name/$submitted" ;;
     wrong) printf 'int main(void){return 0;}\n' >"$work/rendu/$name/$submitted" ;;
+    compile_error) printf 'this is not valid C\n' >"$work/rendu/$name/$submitted" ;;
     missing) ;;
-    infinite) printf 'int main(void){for(;;){} return 0;}\n' >"$work/rendu/$name/$submitted" ;;
+    infinite)
+        if grep -Eq '(^|[[:space:]])main[[:space:]]*\(' "$reference"; then
+            printf 'int main(void){for(;;){} return 0;}\n' >"$work/rendu/$name/$submitted"
+        else
+            cp "$reference" "$work/rendu/$name/$submitted"
+            sed -i '0,/^[[:space:]]*{$/s//&\n\tfor (;;) {}/' "$work/rendu/$name/$submitted"
+        fi
+        ;;
+    semantic)
+        if [ "$name" = is_power_of_2 ]; then
+            printf '%s\n' 'int is_power_of_2(unsigned int n){return n != 0 && n % 2 == 0;}' >"$work/rendu/$name/$submitted"
+        elif [ "$name" = ft_strlen ]; then
+            printf '%s\n' 'int ft_strlen(char *s){(void)s;return 0;}' >"$work/rendu/$name/$submitted"
+        elif [ "$name" = swap_bits ]; then
+            printf '%s\n' 'unsigned char swap_bits(unsigned char n){return n;}' >"$work/rendu/$name/$submitted"
+        elif [ "$name" = reverse_bits ]; then
+            printf '%s\n' 'unsigned char reverse_bits(unsigned char n){return n;}' >"$work/rendu/$name/$submitted"
+        elif [ "$name" = ft_atoi ]; then
+            printf '%s\n' 'int ft_atoi(char *s){(void)s;return 0;}' >"$work/rendu/$name/$submitted"
+        elif [ "$name" = ft_strdup ]; then
+            printf '%s\n' 'char *ft_strdup(char *s){return s;}' >"$work/rendu/$name/$submitted"
+        elif grep -Eq '(^|[[:space:]])main[[:space:]]*\(' "$reference"; then
+            printf '%s\n' '#include <unistd.h>' 'int main(void){write(1,"\n",1);return 0;}' >"$work/rendu/$name/$submitted"
+        elif [ "$name" = ft_swap ]; then
+            printf '%s\n' 'void ft_swap(int *a,int *b){(void)a;(void)b;}' >"$work/rendu/$name/$submitted"
+        else
+            cp "$reference" "$work/rendu/$name/$submitted"
+            if grep -q 'while (' "$reference"; then
+                sed -i '0,/while (/s//while (0 \&\& /' "$work/rendu/$name/$submitted"
+            elif grep -q 'if (' "$reference"; then
+                sed -i '0,/if (/s//if (0 \&\& /' "$work/rendu/$name/$submitted"
+            else
+                printf 'No safe semantic mutation for %s.\n' "$name" >&2
+                exit 3
+            fi
+        fi
+        ;;
     *) exit 2 ;;
 esac
 
-if (cd "$work" && timeout --foreground --kill-after=2s 35s bash .system/grading/tester.sh >/dev/null 2>&1); then
-    [ -f "$work/.system/grading/passed" ]
-else
-    exit 1
+set +e
+(cd "$work" && timeout --kill-after=2s 35s bash .system/grading/tester.sh >/dev/null 2>&1)
+tester_status=$?
+set -e
+if [ "$mode" = semantic ] && grep -Eqi 'compilation|undefined reference|error:' "$work/traceback" "$work/.system/grading/traceback" 2>/dev/null; then
+    exit 4
 fi
+if [ "$tester_status" -eq 0 ] && [ -f "$work/.system/grading/passed" ]; then
+    exit 0
+fi
+exit 1

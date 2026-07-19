@@ -68,9 +68,6 @@ exercise randomize_exercise(std::map<int, exercise> list, bool remove_success)
         std::ifstream success_ex("success/success_ex");
         std::string line;
         std::string name;
-        int assignement;
-        int level_ex;
-        int time_bef_grade;
         while (std::getline(success_ex, line))
         {
             std::istringstream iss(line);

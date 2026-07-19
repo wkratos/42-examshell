@@ -25,7 +25,7 @@ sources=(
     .system/utils.cpp .system/grade_request.cpp .system/data_persistence.cpp
 )
 
-if ! g++ -std=c++11 -Wall -Wextra "${sources[@]}" -lreadline -o .system/a.out; then
+if ! g++ -std=c++11 -Wall -Wextra -Werror "${sources[@]}" -lreadline -o .system/a.out; then
     printf 'Error: examshell compilation failed.\n' >&2
     exit 1
 fi

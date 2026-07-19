@@ -30,7 +30,6 @@ void exam::restore_data(void)
     std::string name;
     std::string assign;
     std::string time_bef_grade;
-    time_t t;
     file.open(".system/exam_token/current_token.txt", std::ios::in);
     if (file.is_open())
     {

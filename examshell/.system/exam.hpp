@@ -45,6 +45,7 @@ std::string current_path(void);
 exercise randomize_exercise(std::map<int, exercise> list, bool remove_success);
 exam restore_data(void);
 bool file_exists(std::string path);
+int run_tester_process_group(const char *script, unsigned int timeout_seconds);
 
 void reset_folder(void);
 void connexion(void);

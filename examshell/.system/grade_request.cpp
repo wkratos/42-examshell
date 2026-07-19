@@ -1,5 +1,44 @@
 #include "exam.hpp"
 #include <sys/wait.h>
+#include <cerrno>
+
+int run_tester_process_group(const char *script, unsigned int timeout_seconds)
+{
+    pid_t child = fork();
+    if (child == 0)
+    {
+        if (setsid() == -1)
+            _exit(126);
+        execlp("bash", "bash", script, static_cast<char *>(NULL));
+        _exit(127);
+    }
+    if (child < 0)
+        return -1;
+
+    int status = 0;
+    for (unsigned int elapsed = 0; elapsed < timeout_seconds * 10; ++elapsed)
+    {
+        pid_t result = waitpid(child, &status, WNOHANG);
+        if (result == child)
+            return status;
+        if (result == -1 && errno != EINTR)
+            return -1;
+        usleep(100000);
+    }
+
+    kill(-child, SIGTERM);
+    for (int grace = 0; grace < 20; ++grace)
+    {
+        pid_t result = waitpid(child, &status, WNOHANG);
+        if (result == child)
+            return 124 << 8;
+        usleep(100000);
+    }
+    kill(-child, SIGKILL);
+    while (waitpid(child, &status, 0) == -1 && errno == EINTR)
+        ;
+    return 124 << 8;
+}
 
 void exam::fail_ex()
 {
@@ -200,11 +239,11 @@ void exam::grade_request(bool i)
     }
 
     remove(".system/grading/passed");
-    int tester_status = system("timeout --foreground --kill-after=2s 30s bash .system/grading/tester.sh");
+    int tester_status = run_tester_process_group(".system/grading/tester.sh", 30);
     bool tester_passed = tester_status != -1 && WIFEXITED(tester_status)
         && WEXITSTATUS(tester_status) == 0 && file_exists(".system/grading/passed");
     if (tester_status != -1 && WIFEXITED(tester_status)
-        && (WEXITSTATUS(tester_status) == 124 || WEXITSTATUS(tester_status) == 137))
+        && WEXITSTATUS(tester_status) == 124)
     {
         remove(".system/grading/passed");
         std::ofstream trace("traceback");

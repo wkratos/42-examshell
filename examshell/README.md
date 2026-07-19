@@ -28,6 +28,12 @@ steps instead of attempting to open nonexistent directories.
 The launcher reports the exact missing dependency or compiler error. It does not install
 packages or update the repository automatically.
 
+## Privacy and offline use
+
+The simulator performs no telemetry, usage-event posting, remote VIP lookup, automatic
+update, or other startup network request. Student and Piscine modes work fully offline.
+The historical data-sender entry point remains only as a no-operation compatibility shim.
+
 ## Build and run
 
 ```sh
@@ -49,8 +55,10 @@ Subjects are written to `subjects/`. Put the requested submission in
 ## Grading safety
 
 Only exercise folders containing a subject and a meaningful tester are selectable.
-The shared correction engine applies a 30-second hard timeout to every tester; newer
-program testers additionally apply a three-second timeout to each submitted execution.
+The shared correction engine starts each tester in an isolated process group and applies
+a 30-second hard timeout to the whole group. It sends `TERM`, waits briefly, then sends
+`KILL` and reaps the tester. Individual submitted executions also have a three-second
+timeout.
 Compilation failures, missing submissions, wrong output, and timeouts are failures.
 
 The current Piscine placement audit is recorded in [TESTER_STATUS.md](TESTER_STATUS.md).

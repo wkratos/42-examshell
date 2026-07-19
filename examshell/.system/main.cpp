@@ -214,6 +214,8 @@ bool exam::start_new_ex(void)
 
 int main(int argc, char **argv)
 {
+    (void)argc;
+    (void)argv;
     signal(SIGINT, sigc);
     signal(SIGQUIT, sigc);
     signal(SIGTERM, sigc);

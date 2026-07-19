@@ -293,29 +293,15 @@ std::string generate_unique_id()
 }
 
 // CONSTRUCTOR/OPERATOR/GETTER/SETTER
-exam::exam(void) : exam_grade(0), level(0), level_max(0), failures(0), student(false), backup(false), using_cheatcode(0)
+exam::exam(void) : student(false), waiting_time(true), level_max(0), changex(0),
+    setting_dse(false), setting_dcc(false), setting_an(false), start_time(0), end_time(0),
+    reelmode(true), level_per_ex_save(0), time_max(0), exam_number(0), using_cheatcode(0),
+    exam_grade(0), vip(false), level_per_ex(0), level(0), failures(0), backup(false)
 {
-    reelmode = true;
-    waiting_time = true;
-	vip = 0;
     username = getenv("USER");
     load_settings();
-	system("curl https://user.grademe.fr/vip_list > .system/vip_list 2> /dev/null");
-	std::ifstream vip_list(".system/vip_list");
-	std::string line;
-
-	while (std::getline(vip_list, line))
-	{
-		if (line == username)
-		{
-			vip = 1;
-			break;
-		}
-	}
-    changex = 0;
     if (setting_an == 1)
         setenv("LOGNAMELOG42EXAM", generate_unique_id().c_str(), 1);
-    system("rm .system/vip_list");
 }
 
 exam &exam::operator=(exam const &src)
@@ -337,7 +323,10 @@ exam &exam::operator=(exam const &src)
     return (*this);
 }
 
-exam::exam(exam const &src) {}
+exam::exam(exam const &src)
+{
+    *this = src;
+}
 exam::~exam(void) {}
 
 void exam::up_lvl(void)

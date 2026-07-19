@@ -1,9 +1,4 @@
-#!/bin/bash
-userpost="user=$LOGNAMELOG42EXAM"
-os="os=$(uname)"
-date=$(date '+%F_%H:%M:%S')
-time="time=$date"
+#!/usr/bin/env bash
 
-usingpost="using=$1"
-
-curl -X POST -F "$userpost" -F "$usingpost" -F "$os" -F "$time" "https://user.grademe.fr/exam.php" > /dev/null 2>&1
+# Telemetry was removed. This compatibility shim intentionally performs no network I/O.
+exit 0

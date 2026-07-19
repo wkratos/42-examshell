@@ -80,7 +80,7 @@ void exam::info(void)
     for (std::map<int, exercise>::iterator it = lvl_ex.begin(); it != lvl_ex.end(); it++)
     {
         std::cout << "  Level " << LIME << it->second.get_lvl() << RESET << ": " << std::endl;
-        for (unsigned int i = 0; i < it->second.get_assignement(); i++)
+        for (int i = 0; i < it->second.get_assignement(); i++)
         {
             std::cout << "    " << YELLOW << i << RESET << ": " << LIME << it->second.get_name() << RESET << " for " << (int)level_per_ex_save  << " potential points (" << RED << "Failure" << RESET << ")" << std::endl;
         }
@@ -92,7 +92,7 @@ void exam::info(void)
         exam_random_show();
     else
     {
-        for (unsigned int i = 0; i < current_ex->get_assignement(); i++)
+        for (int i = 0; i < current_ex->get_assignement(); i++)
         {
             std::cout << "    " << YELLOW << i << RESET << ": " << LIME << current_ex->get_name() << RESET << " for " << (int)level_per_ex_save << " potential points (" << RED << "Failure" << RESET << ")" << std::endl;
         }
@@ -127,7 +127,7 @@ void exam::infovip(void)
     for (std::map<int, exercise>::iterator it = lvl_ex.begin(); it != lvl_ex.end(); it++)
     {
         std::cout << "  Level " << LIME << it->second.get_lvl() << RESET << ": " << std::endl;
-        for (unsigned int i = 0; i < it->second.get_assignement(); i++)
+        for (int i = 0; i < it->second.get_assignement(); i++)
         {
             std::cout << "    " << YELLOW << i << RESET << ": " << LIME << it->second.get_name() << RESET << " for " << (int)level_per_ex_save * (it->second.get_lvl() + 1) << " potential points (" << RED << "Failure" << RESET << ")" << std::endl;
         }
@@ -139,7 +139,7 @@ void exam::infovip(void)
         exam_random_show();
     else
     {
-        for (unsigned int i = 0; i < current_ex->get_assignement(); i++)
+        for (int i = 0; i < current_ex->get_assignement(); i++)
         {
             std::cout << "    " << YELLOW << i << RESET << ": " << LIME << current_ex->get_name() << RESET << " for " << (int)(((double)level + 1) / (double)level_max * 100) << " potential points (" << RED << "Failure" << RESET << ")" << std::endl;
         }
@@ -168,7 +168,7 @@ void connexion(void)
     system("clear");
     std::cout << RESET;
     std::string examsystem = "examshell";
-    for (int i = 0; i < examsystem.length(); i++)
+    for (std::string::size_type i = 0; i < examsystem.length(); i++)
     {
         std::cout << examsystem[i];
         usleep(70000);
@@ -183,7 +183,7 @@ void connexion(void)
     fflush(stdout);
     usleep(600000);
     std::string login = getenv("USER");
-    for (int i = 0; i < login.size(); i++)
+    for (std::string::size_type i = 0; i < login.size(); i++)
     {
         usleep(100000);
         std::cout << login[i];

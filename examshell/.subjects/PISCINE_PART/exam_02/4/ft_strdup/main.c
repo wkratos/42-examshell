@@ -1,22 +1,20 @@
-#include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-char    *ft_strdup(char *src);
+char *ft_strdup(char *src);
 
-void	test(char *str)
+int main(int argc, char **argv)
 {
-	printf("%s = ", str);
-	printf("%s | ", ft_strdup(str));
-}
+    char *copy;
 
-int main(int argc, char *argv[])
-{
-	int i;
-
-	i = 1;
-	if (argc == 1)
-		return (0);
-	while (argv[i])
-		test(argv[i++]);
-	return 0;
+    if (argc != 2)
+        return (1);
+    copy = ft_strdup(argv[1]);
+    if (copy == NULL)
+        return (2);
+    printf("content:%s\n", copy);
+    printf("storage:%s\n", copy == argv[1] ? "borrowed" : "allocated");
+    if (copy != argv[1])
+        free(copy);
+    return (0);
 }
