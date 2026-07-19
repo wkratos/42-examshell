@@ -1,5 +1,14 @@
 #include "exam.hpp"
 
+static bool meaningful_tester(const std::string &path)
+{
+    std::ifstream file(path.c_str());
+    std::stringstream contents;
+    contents << file.rdbuf();
+    std::string script = contents.str();
+    return script.size() >= 20 && script.find("exit 0") == std::string::npos;
+}
+
 // ==> Store all possible exercises in a map
 std::map<int, exercise> exam::list_dir(void)
 {
@@ -7,17 +16,17 @@ std::map<int, exercise> exam::list_dir(void)
     int i = 0;
     std::map<int, exercise> list;
     std::string path;
+    int disk_level = subject_level();
     if (student)
-        path = ".subjects/STUD_PART/exam_0" + std::to_string(exam_number) + "/" + std::to_string(level) + "/";
+        path = ".subjects/STUD_PART/exam_0" + std::to_string(exam_number) + "/" + std::to_string(disk_level) + "/";
     else
-        path = ".subjects/PISCINE_PART/exam_0" + std::to_string(exam_number) + "/" + std::to_string(level) + "/";
+        path = ".subjects/PISCINE_PART/exam_0" + std::to_string(exam_number) + "/" + std::to_string(disk_level) + "/";
 
     DIR *dir = opendir(path.c_str());
     std::string folder;
     if (dir == NULL)
     {
-        std::cout << "Error: can't open directory" << get_path() << std::endl;
-        sleep(100);
+        std::cout << "Error: no exercise pool exists for level " << level << "." << std::endl;
         return list;
     }
     while ((entry = readdir(dir)) != NULL)
@@ -31,6 +40,7 @@ std::map<int, exercise> exam::list_dir(void)
         if (folder != "." && folder != ".." && folder != ".DS_Store"
             && file_exists(exercise_path + "/attachment/subject.en.txt")
             && file_exists(exercise_path + "/tester.sh")
+            && meaningful_tester(exercise_path + "/tester.sh")
             && used_exercises.find(folder) == used_exercises.end()
             && !completed_this_session)
         {
@@ -48,10 +58,34 @@ std::string exam::get_path(void)
     std::string path_exam;
 
     if (student)
-        path_exam = ".subjects/STUD_PART/exam_0" + std::to_string(exam_number) + "/" + std::to_string(level) + "/" + current_ex->get_name() + "/";
+        path_exam = ".subjects/STUD_PART/exam_0" + std::to_string(exam_number) + "/" + std::to_string(subject_level()) + "/" + current_ex->get_name() + "/";
     else
-        path_exam = ".subjects/PISCINE_PART/exam_0" + std::to_string(exam_number) + "/" + std::to_string(level) + "/" + current_ex->get_name() + "/";
+        path_exam = ".subjects/PISCINE_PART/exam_0" + std::to_string(exam_number) + "/" + std::to_string(subject_level()) + "/" + current_ex->get_name() + "/";
     return (path_exam);
+}
+
+int exam::subject_level(void) const
+{
+    if (student || exam_number >= 3)
+        return level;
+    const std::string root = ".subjects/PISCINE_PART/exam_0" + std::to_string(exam_number);
+    DIR *dir = opendir(root.c_str());
+    int highest = -1;
+    if (dir != NULL)
+    {
+        struct dirent *entry;
+        while ((entry = readdir(dir)) != NULL)
+        {
+            char *end = NULL;
+            long candidate = strtol(entry->d_name, &end, 10);
+            if (*entry->d_name && end && *end == '\0' && candidate > highest)
+                highest = static_cast<int>(candidate);
+        }
+        closedir(dir);
+    }
+    if (highest < 0 || level_max <= 1)
+        return level;
+    return mapped_pool(level, level_max, highest);
 }
 
 // ==> Set max level for an exam
@@ -78,8 +112,20 @@ void exam::set_max_lvl(void)
 
 int exam::current_score(void) const
 {
-    int score = level * level_per_ex_save;
+    return score_for_progress(level, level_per_ex_save);
+}
+
+int exam::score_for_progress(int completed, int points)
+{
+    int score = completed * points;
     return (score > 100 ? 100 : score);
+}
+
+int exam::mapped_pool(int logical_level, int logical_levels, int highest_pool)
+{
+    if (highest_pool < 0 || logical_levels <= 1)
+        return logical_level;
+    return (logical_level * highest_pool) / (logical_levels - 1);
 }
 
 // ==> Set max hrs for exam (3 or 4)

@@ -11,7 +11,7 @@ int	main(int ac, char **ag)
 			i++;
 		while (ag[1][i])
 		{
-			while (ag[1][i] != ' ' && ag[1][i] != '\t')
+			while (ag[1][i] && ag[1][i] != ' ' && ag[1][i] != '\t')
 			{
 				write (1, &ag[1][i], 1);
 				i++;

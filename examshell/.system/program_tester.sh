@@ -3,6 +3,10 @@
 # Shared deterministic tester for program exercises.  The reference source and this
 # metadata live only in .system/grading; submissions are read from rendu.
 set -u
+if ! command -v timeout >/dev/null 2>&1; then
+    printf 'Error: GNU timeout is required for grading.\n' >&2
+    exit 1
+fi
 name=$(cat .system/grading/exercise_name)
 file="$name.c"
 reference=".system/grading/$file"
@@ -24,7 +28,7 @@ run_case() {
     actual=$(mktemp)
     timeout 3 .system/grading/reference "$@" >"$expected" 2>&1
     ref_status=$?
-    timeout 3 .system/grading/submission "$@" >"$actual" 2>&1
+    timeout --foreground --kill-after=1s 3s .system/grading/submission "$@" >"$actual" 2>&1
     sub_status=$?
     if [ "$ref_status" -ne "$sub_status" ] || ! cmp -s "$expected" "$actual"; then
         printf 'FAILED: %s' "$file" >>"$traceback"
@@ -42,7 +46,7 @@ run_case() {
 ok=0
 case "$name" in
     add_prime_sum) run_case 1 && run_case 2 && run_case 5 && run_case 100 || ok=1 ;;
-    epur_str) run_case '  lorem   ipsum  ' && run_case '' && run_case 'one' || ok=1 ;;
+    epur_str) run_case 'one' && run_case '  lorem   ipsum  ' && run_case $'\talpha\tbeta\t' && run_case $'  mixed\t spaces \t' && run_case '' && run_case || ok=1 ;;
     expand_str) run_case '  lorem   ipsum  ' && run_case 'one' && run_case || ok=1 ;;
     paramsum) run_case && run_case a && run_case a b c d e || ok=1 ;;
     rstr_capitalizer) run_case 'a FiRSt LiTTlE TESt' && run_case ' SecONd test ' || ok=1 ;;

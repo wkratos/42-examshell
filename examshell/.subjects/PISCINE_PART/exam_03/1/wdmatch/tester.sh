@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 FILE='wdmatch.c'
+ASSIGN='wdmatch/wdmatch.c'
 MAIN='main.c'
 MAIN1='../.system/grading/main.c'
 
@@ -27,7 +28,7 @@ gcc -o source $FILE $MAIN
 rm source
 cd ../../rendu
 {
-gcc -o final $FILE $MAIN1
+gcc -o final $ASSIGN $MAIN1
 }  &>../.system/grading/traceback
 {
 ./final  | cat -e > finalexam        #TESTING
@@ -60,7 +61,7 @@ gcc -o source $FILE $MAIN
 rm source
 cd ../../rendu
 {
-gcc -o final $FILE $MAIN1
+gcc -o final $ASSIGN $MAIN1
 ./final "error" rrerrrfiiljdfxjyuifrrvcoojh | cat -e > finalexam     #TESTING
 mv finalexam ../.system/grading/
 rm final
@@ -88,7 +89,7 @@ gcc -o source $FILE $MAIN
 rm source
 cd ../../rendu
 {
-gcc -o final $FILE $MAIN1
+gcc -o final $ASSIGN $MAIN1
 ./final "quarante deux" "qfqfsudf arzgsayns tsregfdgs sjytdekuoixq " | cat -e > finalexam     #TESTING
 mv finalexam ../.system/grading/
 rm final
@@ -116,7 +117,7 @@ gcc -o source $FILE $MAIN
 rm source
 cd ../../rendu
 {
-gcc -o final $FILE $MAIN1
+gcc -o final $ASSIGN $MAIN1
 ./final "faya" "fgvvfdxcacpolhyghbred" | cat -e > finalexam     #TESTING
 mv finalexam ../.system/grading/
 rm final
@@ -144,7 +145,7 @@ gcc -o source $FILE $MAIN
 rm source
 cd ../../rendu
 {
-gcc -o final $FILE $MAIN1
+gcc -o final $ASSIGN $MAIN1
 ./final "faya" "fgvvfdxcacpolhyghbreda" | cat -e > finalexam     #TESTING
 mv finalexam ../.system/grading/
 rm final

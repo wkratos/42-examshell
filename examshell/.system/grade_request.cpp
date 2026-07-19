@@ -1,4 +1,5 @@
 #include "exam.hpp"
+#include <sys/wait.h>
 
 void exam::fail_ex()
 {
@@ -198,9 +199,20 @@ void exam::grade_request(bool i)
         return;
     }
 
-    system("bash .system/grading/tester.sh");
+    remove(".system/grading/passed");
+    int tester_status = system("timeout --foreground --kill-after=2s 30s bash .system/grading/tester.sh");
+    bool tester_passed = tester_status != -1 && WIFEXITED(tester_status)
+        && WEXITSTATUS(tester_status) == 0 && file_exists(".system/grading/passed");
+    if (tester_status != -1 && WIFEXITED(tester_status)
+        && (WEXITSTATUS(tester_status) == 124 || WEXITSTATUS(tester_status) == 137))
+    {
+        remove(".system/grading/passed");
+        std::ofstream trace("traceback");
+        trace << "TIMEOUT: tester exceeded the 30-second safety limit.\n";
+        std::cout << RED << "TIMEOUT: submission or tester exceeded 30 seconds." << RESET << std::endl;
+    }
 
-    if (file_exists(".system/grading/passed"))
+    if (tester_passed)
     {
         success_ex(0);
     }

@@ -92,6 +92,8 @@ public:
     int level_max;
     bool changex;
     std::set<std::string> used_exercises;
+    static int score_for_progress(int completed, int points);
+    static int mapped_pool(int logical_level, int logical_levels, int highest_pool);
 
 private:
     void set_max_time(void);
@@ -101,6 +103,7 @@ private:
     void exam_random_show(void);
     void end_exam(void);
     void set_max_lvl(void);
+    int subject_level(void) const;
     int current_score(void) const;
     int stud_menu(void);
     void load_settings(void);

@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 FILE='max.c'
+ASSIGN='max/max.c'
 MAIN='main.c'
 MAIN1='../.system/grading/main.c'
 
@@ -27,7 +28,7 @@ gcc -o source $FILE $MAIN
 rm source
 cd ../../rendu
 {
-gcc -o final $FILE $MAIN1
+gcc -o final $ASSIGN $MAIN1
 }  &>../.system/grading/traceback
 {
 ./final "1" "3" "212121" | cat -e > finalexam        #TESTING
@@ -60,7 +61,7 @@ gcc -o source $FILE $MAIN
 rm source
 cd ../../rendu
 {
-gcc -o final $FILE $MAIN1
+gcc -o final $ASSIGN $MAIN1
 ./final "1" "3" "524242432423423432" | cat -e > finalexam     #TESTING
 mv finalexam ../.system/grading/
 rm final
@@ -88,7 +89,7 @@ gcc -o source $FILE $MAIN
 rm source
 cd ../../rendu
 {
-gcc -o final $FILE $MAIN1
+gcc -o final $ASSIGN $MAIN1
 ./final "-2" "-3" "-3" | cat -e > finalexam     #TESTING
 mv finalexam ../.system/grading/
 rm final
@@ -116,7 +117,7 @@ gcc -o source $FILE $MAIN
 rm source
 cd ../../rendu
 {
-gcc -o final $FILE $MAIN1
+gcc -o final $ASSIGN $MAIN1
 ./final "-5" "-3" "-3" | cat -e > finalexam     #TESTING
 mv finalexam ../.system/grading/
 rm final

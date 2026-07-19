@@ -1,0 +1,17 @@
+.DS_Store
+*.o
+*.out
+a.out
+a.out.dSYM/
+examshell/.system/a.out
+examshell/.system/a.out.dSYM/
+examshell/.system/.devmake.err
+examshell/.system/readline_ok
+examshell/.system/acceptCGV
+examshell/.system/unique_id.txt
+examshell/.system/exam_token/current_token.txt
+examshell/rendu/
+examshell/subjects/
+examshell/success/
+examshell/traces/
+examshell/traceback

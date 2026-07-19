@@ -1,110 +1,76 @@
-# examshell v2 🎓
+# examshell
 
-> Original project by [jcluzet].
->
-> **Maintained, expanded, and improved by [@wkratos](https://github.com/wkratos).**
->
-> @wkratos added and maintains Week 03, Week 04 Final, expanded multi-exercise
-> selection, scoring and reliability fixes, tester improvements, and terminal UI work.
-> See [AUTHORS.md](AUTHORS.md) for the detailed attribution record.
+Interactive local practice for 42 Piscine exercises and the existing Student Exam Rank
+exercises.
 
- ## All 42 exams auto-correct, to practice.
- ## ExamRank02, 03, 04, 05, 06 & Piscine Exam Weeks 01-04
-  ##   👉  examshell is now part of **[GRADEME.FR](https://grademe.fr)** 😎
- #### Disclaimer: This project is not made by 42School, it's not identical to the proposed exams and does not reflect your exams at 42
- ### NEW ExamRank02 available 🥳
- 
+Original project by [@jcluzet].
 
-<img width="711" alt="Screenshot 2022-09-06 at 17 00 20" src="https://user-images.githubusercontent.com/55356071/188669215-6681228d-e6b5-4229-b177-45d2699e29ae.png">
+Maintained, expanded, and improved by [@wkratos](https://github.com/wkratos).
 
------
+## Modes
 
-### ⚠️ This project is available on MAC and LINUX (the real exam will be on Linux)
+- **Piscine mode:** Weeks 01, 02, 03, and Week 04 Final.
+- **Student mode:** the existing Exam Rank 02–06 content and its original behavior.
 
------
+Piscine Weeks 01–03 award 10 points for each successful correction. Week 04 awards
+6 points per success and caps the displayed final score at 100. Exercises are selected
+randomly inside the current available difficulty pool and are not repeated during a
+session. Weeks 01 and 02 reuse their eight physical difficulty pools across ten scoring
+steps instead of attempting to open nonexistent directories.
 
- ## Practice for the 42 exam 🏊‍♂️
+## Dependencies
 
- 
-  - [x] New Subjects ExamRank02 APRIL 2022 
-  - [x] Subject drawn at random 
-  - [x] Exponential waiting for a correction
-  - [x] X Hours maximum 
-  - [x] Automatic correction (without internet) 
-  - [x] Traceback available 
-  - [x] Detect infinite loop in your program (ExamRank02)
-  - [ ] Detect infinite loop in all ExamRank
-  - [ ] Detect leaks in all exercices
+- Linux or macOS with a POSIX-compatible shell;
+- `g++` and `cc`;
+- the readline development library;
+- GNU `timeout` (commonly provided by GNU coreutils).
 
-<img width="711" alt="Screenshot 2022-09-06 at 17 00 47" src="https://user-images.githubusercontent.com/55356071/188669367-504411a5-5c62-4848-932e-405c9ee05a45.png">
+The launcher reports the exact missing dependency or compiler error. It does not install
+packages or update the repository automatically.
 
-<img width="711" alt="Screenshot 2022-09-06 at 17 01 15" src="https://user-images.githubusercontent.com/55356071/188669418-04f8bb1b-9cc2-4c07-9d07-5e9c570283b4.png">
+## Build and run
 
+```sh
+cd examshell
+make
+```
 
+The first `make` compiles and starts the interface. Other build targets are:
 
+```sh
+make clean
+make fclean
+make re
+```
 
- # 👓 CHEAT code :
- (sorry don't work in exam at 42)
-   
-   **remove_grade_time** : remove grade time between two push
-   
-      > The maximum time to complete the exam is only information. 
-      Here, the exercise can always be corrected even after the time limit.
-      
-   **force_success** : force an exercice to success
-   
-   **new_ex** : generate a new exercice on the same level
-   
- # 🕶 VIP CHEAT code :
- [Sponsor to become VIP](https://github.com/sponsors/JCluzet)
- OR
- [Contribute to become VIP](CONTRIBUTING.md)
- 
- You can contribute by adding new exercises or improving the program 
- 
-   **gradenow** : Get an instant correction (no grademe cooldown)
-   
-  > Being a sponsor brings VIP on GradeMe and examshell.
-  
-  > VIPs also have exactly the same display as the 42 examshell.
-  
-  > More features coming
+Subjects are written to `subjects/`. Put the requested submission in
+`rendu/<exercise-name>/`, then enter `grademe` in the examshell terminal.
 
- # Launch examshell in ONE COMMAND : 
+## Grading safety
 
- ```bash -c "$(curl https://grademe.fr)"```    --> Visit [Grademe.fr](https://grademe.fr)
- 
-# 👮‍♀️ RGPD Information :
- Some data may be collected for the sole purpose of improving the service, for example to check if an error is coming from the student and not from the program. 
-The data that can be collected are : 
-- The host name of your machine.
-- The exam number you choose.
-- Name of exercise, fail or success, current assignement and level.
+Only exercise folders containing a subject and a meaningful tester are selectable.
+The shared correction engine applies a 30-second hard timeout to every tester; newer
+program testers additionally apply a three-second timeout to each submitted execution.
+Compilation failures, missing submissions, wrong output, and timeouts are failures.
 
-# Contribution by adding more exercises :
+The current Piscine placement audit is recorded in [TESTER_STATUS.md](TESTER_STATUS.md).
+That matrix includes intentionally excluded incomplete Week 03 placements.
 
-You can contribute by adding new exercises very easily with examshell. 
+## Known limitations
 
-📄 Read this documentation: [Contribution DOC](CONTRIBUTING.md)
+- This is an independent practice simulator, not an official 42 product.
+- Subjects and expected behavior can differ between campuses or change over time.
+- Many historical testers compare output with bundled internal fixtures. Passing them is
+  useful practice but does not guarantee a result from an official Moulinette.
+- The global timeout reports which grading request timed out, but legacy testers do not
+  always identify the individual test case that stalled.
+- Leak checking is not implemented for every exercise.
 
-🥳 If your contribution is accepted, your name will be listed in the ReadMe as a contributor, thanks!
+## Reporting a tester problem
 
-Contributor : pandaero
-              Kuninoto
-              ComlanGiovanni
+Open an issue at [github.com/wkratos/42-examshell](https://github.com/wkratos/42-examshell)
+and include the week, difficulty, exercise, submitted filename, observed output,
+expected output, operating system, and compiler version. Do not include exam answers or
+private credentials.
 
-# Disclaimer for 42 staff :
-
-This project is not identical to the proposed exams and does not reflect 42 official exam. 
-It is only meant to help 42 students to train on some exercises found on Github. 
-It works simply by doing a DIFF on both versions. 
-All the subjects have been found on Github. During my schooling at 42, this project helped me to understand a lot of notions like how to host a website, working with javascript, php and others.
-This project has been created with the sole purpose of helping students to understand their mistakes and improve themselves. 
-If It’s not the case, I am ready to make changes and corrections on it, examshell/GradeMe has only a non-lucrative and educational purpose. It is completely free and open-source. 
-
-
-# Your help is welcome
-
-👋 If you have any problem with any test, please create an "Issue" here on Github, it will only take 3 minutes of your time and it will help me to make the test more accurate.
-
-📌 Remember that if you encounter an error, you're probably not the only one and your "Issue" will surely help other people.
+See [AUTHORS.md](AUTHORS.md) for attribution and maintenance details.
