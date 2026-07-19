@@ -1,12 +1,45 @@
 <div align="center">
 
-# 42examshell
+# 42-examshell
 
----
+An interactive terminal exam simulator for practising 42 Piscine and Exam Rank
+exercises with local subjects, randomized progression, grading, retries, timeouts,
+tracebacks, and score tracking.
 
-**IMPORTANT: Open The 42_Exam folder and read its README**
+## Credits
 
+**Maintained, expanded, and improved by
+[@wkratos](https://github.com/wkratos).**
+
+The current expansion by @wkratos includes Week 03, Week 04 Final, broader
+multi-exercise support, non-repeating selections, scoring improvements, real tester
+coverage, reliability fixes, and terminal-interface improvements. See the complete
+[authorship and maintenance record](examshell/AUTHORS.md).
 </div>
+
+## Current Piscine coverage
+
+- Week 01: 10 points per successful exercise
+- Week 02: 10 points per successful exercise
+- Week 03: 10 points per successful exercise
+- Week 04 Final: 6 points per successful exercise, capped cleanly at 100
+
+Each difficulty can contain multiple exercises. The engine selects a complete exercise
+with a subject and tester, and avoids repeating exercises during the same session.
+
+## Run locally
+
+```sh
+cd examshell
+make
+```
+
+Read [examshell/README.md](examshell/README.md) for detailed usage and project history.
+
+## Educational use
+
+This is an independent practice project. It is not made by 42 School and does not
+represent or reproduce an official examination environment.
 
 ---
 
@@ -72,4 +105,3 @@ Welcome to 1337 💀.
 To every pooler who thought this was the shortcut:  
 You’ve just been **Piscine-trolled**.  
 Bonne chance, baby shark 🦈  
-lol
